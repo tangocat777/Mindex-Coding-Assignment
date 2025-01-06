@@ -66,16 +66,16 @@ namespace CodeChallenge.Controllers
         /// </summary>
         /// <param name="id">GUID of the employee to query reports</param>
         /// <returns>A ReportingStructure, which includes the employee data and the total number of direct and indirect reports.</returns>
-        [HttpGet("{id}", Name = "getNumberOfReports")]
+        [HttpGet("numberOfReports/{id}", Name = "GetNumberOfReports")]
         public IActionResult GetNumberOfReports(string id)
         {
             _logger.LogDebug($"Recieved employee update request for '{id}'");
 
+            var guidRef = new Guid();
             //check valid input string
             if (string.IsNullOrEmpty(id))
                 return BadRequest("Employee id must not be null or empty");
-            var guidRegex = "^[{]?[0 - 9a - fA - F]{ 8} -([0 - 9a - fA - F]{ 4} -){ 3} [0 - 9a - fA - F]{ 12} [}]?$";
-            if(!Regex.IsMatch(id, guidRegex))
+            if (!Guid.TryParse(id, out guidRef))
                 return BadRequest("Employee id must be in the form of a GUID");
 
             //make sure the employee exists
@@ -84,9 +84,13 @@ namespace CodeChallenge.Controllers
                 return NotFound("Employee with id" + id + " does not exist");
 
             var count = 0;
-            foreach(Employee report in existingEmployee.DirectReports)
+            //handle null direct reports, IE someone that does not have any direct reports.
+            if (existingEmployee.DirectReports is not null)
             {
-                count += GetIndirectReports(report);
+                foreach (Employee report in existingEmployee.DirectReports)
+                {
+                    count += GetIndirectReports(report);
+                }
             }
             var result = new ReportingStructure(existingEmployee, count);
             return Ok(result);
@@ -96,9 +100,13 @@ namespace CodeChallenge.Controllers
         {
             //start count at one for current employee
             var count = 1;
-            foreach(Employee indirectReport in report.DirectReports)
+            //handle null direct reports, IE someone that does not have any direct reports.
+            if (report.DirectReports is not null)
             {
-                count += GetIndirectReports(indirectReport);
+                foreach (Employee indirectReport in report.DirectReports)
+                {
+                    count += GetIndirectReports(indirectReport);
+                }
             }
             return count;
         }
