@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using System.Text.RegularExpressions;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using CodeChallenge.Services;
@@ -46,7 +47,7 @@ namespace CodeChallenge.Controllers
         }
 
         [HttpPut("{id}")]
-        public IActionResult ReplaceEmployee(String id, [FromBody]Employee newEmployee)
+        public IActionResult ReplaceEmployee(String id, [FromBody] Employee newEmployee)
         {
             _logger.LogDebug($"Recieved employee update request for '{id}'");
 
@@ -57,6 +58,49 @@ namespace CodeChallenge.Controllers
             _employeeService.Replace(existingEmployee, newEmployee);
 
             return Ok(newEmployee);
+        }
+
+        /// <summary>
+        /// Gets the number of reports under a given employee. This counting includes indirect reports,
+        /// such as employees who report to a report of the indicated employee.
+        /// </summary>
+        /// <param name="id">GUID of the employee to query reports</param>
+        /// <returns>A ReportingStructure, which includes the employee data and the total number of direct and indirect reports.</returns>
+        [HttpGet("{id}", Name = "getNumberOfReports")]
+        public IActionResult GetNumberOfReports(string id)
+        {
+            _logger.LogDebug($"Recieved employee update request for '{id}'");
+
+            //check valid input string
+            if (string.IsNullOrEmpty(id))
+                return BadRequest("Employee id must not be null or empty");
+            var guidRegex = "^[{]?[0 - 9a - fA - F]{ 8} -([0 - 9a - fA - F]{ 4} -){ 3} [0 - 9a - fA - F]{ 12} [}]?$";
+            if(!Regex.IsMatch(id, guidRegex))
+                return BadRequest("Employee id must be in the form of a GUID");
+
+            //make sure the employee exists
+            var existingEmployee = _employeeService.GetById(id);
+            if (existingEmployee == null)
+                return NotFound("Employee with id" + id + " does not exist");
+
+            var count = 0;
+            foreach(Employee report in existingEmployee.DirectReports)
+            {
+                count += GetIndirectReports(report);
+            }
+            var result = new ReportingStructure(existingEmployee, count);
+            return Ok(result);
+        }
+
+        private int GetIndirectReports(Employee report)
+        {
+            //start count at one for current employee
+            var count = 1;
+            foreach(Employee indirectReport in report.DirectReports)
+            {
+                count += GetIndirectReports(indirectReport);
+            }
+            return count;
         }
     }
 }

@@ -1,1 +1,7 @@
 *.vsidx
+*.cache
+*.editorConfig
+CodeChallenge/obj/Debug/net6.0/CodeChallenge.csproj.FileListAbsolute.txt
+CodeChallenge/obj/Debug/net6.0/CodeChallenge.sourcelink.json
+.vs/CodeChallenge/v17/DocumentLayout.json
+.vs/CodeChallenge/v17/DocumentLayout.backup.json

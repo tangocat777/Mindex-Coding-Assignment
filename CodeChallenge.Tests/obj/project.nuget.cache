@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "WKfYxSVp3TU=",
+  "dgSpecHash": "Qmp523Vgy48=",
   "success": true,
-  "projectFilePath": "C:\\Users\\Tango\\Documents\\Projects\\Mindex Assignment\\CodeChallenge.Tests\\CodeChallenge.Tests.Integration.csproj",
+  "projectFilePath": "C:\\Users\\Tango\\Documents\\Mindex-Coding-Assignment\\CodeChallenge.Tests\\CodeChallenge.Tests.Integration.csproj",
   "expectedPackageFiles": [
     "C:\\Users\\Tango\\.nuget\\packages\\microsoft.aspnetcore.jsonpatch\\6.0.5\\microsoft.aspnetcore.jsonpatch.6.0.5.nupkg.sha512",
     "C:\\Users\\Tango\\.nuget\\packages\\microsoft.aspnetcore.mvc.testing\\6.0.5\\microsoft.aspnetcore.mvc.testing.6.0.5.nupkg.sha512",
