@@ -1,6 +1,5 @@
 ﻿using CodeChallenge.Models;
 using CodeChallenge.Repositories;
-using Microsoft.Extensions.Logging;
 using System.Collections.Generic;
 
 namespace CodeChallenge.Services

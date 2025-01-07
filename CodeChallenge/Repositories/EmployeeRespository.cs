@@ -29,9 +29,10 @@ namespace CodeChallenge.Repositories
 
         public Employee GetById(string id)
         {
-            //By default the db context does not load the Direct Report list. Calling Include()
+            //By default the db context does not load the Direct Report list. Calling load()
             //enumurates the context so that it is set properly.
-            return _employeeContext.Employees.Include(e => e.DirectReports).SingleOrDefault(e => e.EmployeeId == id);
+            _employeeContext.Employees.Load();
+            return _employeeContext.Employees.SingleOrDefault(e => e.EmployeeId == id);
         }
 
         public Task SaveAsync()

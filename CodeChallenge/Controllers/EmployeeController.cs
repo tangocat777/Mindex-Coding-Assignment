@@ -1,8 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using System.Text.RegularExpressions;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using CodeChallenge.Services;
@@ -84,7 +80,7 @@ namespace CodeChallenge.Controllers
             //make sure the employee exists
             var existingEmployee = _employeeService.GetById(id);
             if (existingEmployee == null)
-                return NotFound("Employee with id" + id + " does not exist");
+                return NotFound($"Employee with id {id} does not exist");
 
             var count = 0;
             //handle null direct reports, IE someone that does not have any direct reports.
@@ -120,6 +116,11 @@ namespace CodeChallenge.Controllers
         [HttpPost("compensation")]
         public IActionResult CreateCompensationRecord([FromBody] Compensation compensation)
         {
+            //null check Employee
+            if(compensation.Employee is null)
+            {
+                return BadRequest("Employee must not be null");
+            }
             _logger.LogDebug($"Received create compensation request for '{compensation.Employee.EmployeeId}' effective starting '{compensation.EffectiveDate}'");
 
             var id = compensation.Employee.EmployeeId;
@@ -134,7 +135,7 @@ namespace CodeChallenge.Controllers
             //make sure the employee exists
             var existingEmployee = _employeeService.GetById(id);
             if (existingEmployee == null)
-                return NotFound("Employee with id" + id + " does not exist");
+                return NotFound($"Employee with id {id} does not exist");
 
             //check valid date time
             //in a real life setting, this should probably have a date bound
@@ -154,7 +155,7 @@ namespace CodeChallenge.Controllers
                 return BadRequest("Salary cannot be negative");
             }
 
-            _compensationService.Create(compensation);
+            compensation = _compensationService.Create(compensation);
 
             return CreatedAtRoute("GetCompensationForEmployee", new { id = compensation.Employee.EmployeeId }, compensation);
         }
