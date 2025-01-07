@@ -29,3 +29,4 @@ CodeChallenge/obj/Debug/net6.0/staticwebassets.build.endpoints.json
 CodeChallenge.Tests/obj/CodeChallenge.Tests.Integration.csproj.nuget.dgspec.json
 CodeChallenge/obj/CodeChallenge.csproj.nuget.dgspec.json
 CodeChallenge/obj/project.assets.json
+*.v2
